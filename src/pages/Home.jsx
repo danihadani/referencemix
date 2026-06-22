@@ -52,17 +52,6 @@ export default function Home({ onAnalyze, apiKey, onOpenApiModal, error, saved, 
               ★ {saved.length}
             </button>
           )}
-          <button
-            onClick={onOpenApiModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all"
-            style={apiKey
-              ? { borderColor: '#3ddc84', color: '#3ddc84', background: 'rgba(61,220,132,0.08)' }
-              : { borderColor: '#2a2a32', color: '#5a5a6e', background: 'transparent' }
-            }
-          >
-            <span style={{ fontSize: 7 }}>●</span>
-            {apiKey ? 'API Connected' : 'Connect API'}
-          </button>
         </div>
       </header>
 
