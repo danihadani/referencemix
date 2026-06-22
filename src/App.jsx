@@ -51,7 +51,7 @@ export default function App() {
 
     setView('loading');
     try {
-      const data = await callClaude(query, sourceType, apiKey);
+      const data = await callClaude(query, sourceType);
       setResult({ ...data, type: sourceType });
       setView('results');
     } catch (e) {
