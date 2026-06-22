@@ -44,11 +44,6 @@ export default function App() {
       return;
     }
 
-    if (!apiKey) {
-      setShowApiModal(true);
-      return;
-    }
-
     setView('loading');
     try {
       const data = await callClaude(query, sourceType);
