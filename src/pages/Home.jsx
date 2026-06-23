@@ -10,7 +10,7 @@ const EXAMPLES = [
 
 const SOURCE_TYPES = ['vocal', 'guitar', 'drums', 'bass', 'synth', 'piano', 'mix', 'other'];
 
-export default function Home({ onAnalyze, apiKey, onOpenApiModal, error, saved, onOpenSaved }) {
+export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
   const [query, setQuery] = useState('');
   const [sourceType, setSourceType] = useState('vocal');
   const [customType, setCustomType] = useState('');
@@ -24,95 +24,118 @@ export default function Home({ onAnalyze, apiKey, onOpenApiModal, error, saved, 
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0a0a0c' }}>
-            <header
-        className="flex items-center justify-between px-6 py-4 border-b sticky top-0 z-10"
-        style={{ borderColor: '#1c1c22', background: 'rgba(10,10,12,0.9)', backdropFilter: 'blur(12px)' }}
+    <div className="min-h-screen flex flex-col" style={{ background: '#1a1208' }}>
+      {/* Header — rack panel style */}
+      <header
+  className="flex items-center justify-between px-6 py-3 sticky top-0 z-10 panel-texture"
+  style={{
+    borderBottom: '2px solid #3d2e1a',
+    borderTop: '1px solid #5a4030',
+    background: 'rgba(26,18,8,0.96)',
+    backdropFilter: 'blur(12px)',
+    boxShadow: '0 2px 16px rgba(0,0,0,0.5)',
+  }}
+>
+  <div className="flex items-center gap-4">
+    <div className="screw" />
+    <div
+      className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold"
+      style={{
+        background: 'linear-gradient(135deg, #c4832a, #e05c2a)',
+        color: '#1a1208',
+        boxShadow: '0 0 8px rgba(196,131,42,0.3)',
+        fontFamily: "'JetBrains Mono', monospace",
+        letterSpacing: '0.05em',
+      }}
+    >
+      RM
+    </div>
+    <div>
+      <div className="text-[13px] font-bold tracking-[0.08em]" style={{ color: '#f0e6c8' }}>REFERENCEMIX</div>
+      <div className="text-[8px] tracking-[0.25em]" style={{ color: '#8a7355' }}>AI SIGNAL CHAIN BUILDER</div>
+    </div>
+  </div>
+
+  <div className="flex items-center gap-4">
+    <VUMeter active={focused} />
+    {saved && saved.length > 0 && (
+      <button
+        onClick={onOpenSaved}
+        className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+        style={{ color: '#c4832a' }}
       >
-        <div className="flex items-center gap-3">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #7c5cfc, #ff6b9d)' }}
-          >
-            RM
-          </div>
-          <div>
-            <div className="text-sm font-bold text-[#e8e8f0] leading-none">ReferenceMix</div>
-            <div className="text-[9px] text-[#5a5a6e] font-mono tracking-wider mt-0.5">AI CHAIN BUILDER</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <VUMeter active={focused} />
-          {saved && saved.length > 0 && (
-            <button
-              onClick={onOpenSaved}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all"
-              style={{ borderColor: '#2a2a32', color: '#ff9f43', background: 'rgba(255,159,67,0.08)' }}
-            >
-              ★ {saved.length}
-            </button>
-          )}
-        </div>
-      </header>
+        ★ {saved.length}
+      </button>
+    )}
+    <div className="screw" />
+  </div>
+</header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
+        {/* Hero */}
         <div className="text-center mb-12 max-w-lg">
-          <div className="text-[10px] font-mono tracking-[0.2em] text-[#5a5a6e] mb-4 uppercase">
-            Signal Chain Generator
+          <div className="text-[9px] tracking-[0.3em] mb-4 uppercase flex items-center justify-center gap-2" style={{ color: '#8a7355' }}>
+            <div className="led led-on led-blink" />
+            SIGNAL CHAIN GENERATOR
+            <div className="led led-on led-blink" />
           </div>
           <h1
             className="text-4xl sm:text-5xl font-bold mb-4 leading-tight"
             style={{
-              background: 'linear-gradient(135deg, #e8e8f0 40%, #a084ff)',
+              background: 'linear-gradient(135deg, #f0e6c8 30%, #c4832a)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              letterSpacing: '-0.03em',
+              letterSpacing: '-0.02em',
             }}
           >
-            Sound like your reference.
+            Sound like your<br />reference.
           </h1>
-          <p className="text-[#9090a8] text-base leading-relaxed">
+          <p className="text-[13px] leading-relaxed tracking-wide" style={{ color: '#b89e7a' }}>
             Describe a reference track and get a complete processing chain
             with plugin suggestions and parameter settings.
           </p>
         </div>
 
+        {/* Source type selector — hardware button style */}
         <div
-          className="flex gap-1 p-1 rounded-xl mb-4 w-full max-w-md"
-          style={{ background: '#141418', border: '1px solid #1c1c22' }}
+          className="flex gap-1 p-1.5 mb-4 w-full max-w-lg rack-unit rounded-xl"
         >
           {SOURCE_TYPES.map((t) => (
             <button
               key={t}
               onClick={() => setSourceType(t)}
-              className="flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all duration-150 capitalize"
-              style={sourceType === t
-                ? { background: '#7c5cfc', color: 'white' }
-                : { color: '#5a5a6e', background: 'transparent' }
-              }
+              className={`flex-1 py-2 rounded-xl text-[9px] font-bold tracking-[0.1em] uppercase transition-all duration-100 ${sourceType === t ? 'hw-button-active' : 'hw-button'}`}
+              style={{ color: sourceType === t ? '#1a1208' : '#8a7355' }}
             >
               {t}
             </button>
           ))}
         </div>
-        
-{sourceType === 'other' && (
-  <input
-    value={customType}
-    onChange={(e) => setCustomType(e.target.value)}
-    placeholder="e.g. synth, strings, piano…"
-    className="w-full max-w-md mb-4 px-4 py-2.5 rounded-xl text-sm text-[#e8e8f0] placeholder-[#3a3a4e] outline-none"
-    style={{ background: '#141418', border: '1.5px solid #2a2a32' }}
-  />
-)}
-        <form onSubmit={handleSubmit} className="w-full max-w-md">
-          <div
-            className="relative rounded-2xl transition-all duration-200"
+
+        {sourceType === 'other' && (
+          <input
+            value={customType}
+            onChange={(e) => setCustomType(e.target.value)}
+            placeholder="E.G. SYNTH, STRINGS, PIANO…"
+            className="w-full max-w-lg mb-4 px-4 py-2.5 rounded-xl text-[11px] tracking-wider outline-none"
             style={{
-              background: '#141418',
-              border: `1.5px solid ${focused ? '#7c5cfc' : '#2a2a32'}`,
-              boxShadow: focused ? '0 0 0 3px rgba(124,92,252,0.12)' : 'none',
+              background: '#120d07',
+              border: '1.5px solid #3d2e1a',
+              color: '#f0e6c8',
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          />
+        )}
+
+        {/* Search form */}
+        <form onSubmit={handleSubmit} className="w-full max-w-lg">
+          <div
+            className="relative rounded-xl transition-all duration-200 panel-texture"
+            style={{
+              background: '#120d07',
+              border: `1.5px solid ${focused ? '#c4832a' : '#3d2e1a'}`,
+              boxShadow: focused ? '0 0 0 2px rgba(196,131,42,0.2), inset 0 2px 8px rgba(0,0,0,0.3)' : 'inset 0 2px 8px rgba(0,0,0,0.3)',
             }}
           >
             <textarea
@@ -123,51 +146,55 @@ export default function Home({ onAnalyze, apiKey, onOpenApiModal, error, saved, 
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); }
               }}
-              placeholder={`e.g. Billie Eilish — Happier Than Ever ${sourceType}`}
+              placeholder={`E.G. BILLIE EILISH — HAPPIER THAN EVER / ${sourceType.toUpperCase()}`}
               rows={2}
-              className="w-full bg-transparent text-[#e8e8f0] placeholder-[#3a3a4e] text-sm resize-none outline-none px-5 pt-4 pb-14 leading-relaxed"
+              className="w-full bg-transparent text-[11px] resize-none outline-none px-5 pt-4 pb-14 leading-relaxed tracking-wider"
+              style={{ color: '#f0e6c8', fontFamily: "'JetBrains Mono', monospace" }}
             />
             <button
               type="submit"
-              className="absolute right-3 bottom-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #7c5cfc, #ff6b9d)' }}
+              className="hw-button-active absolute right-3 bottom-3 px-5 py-2 rounded-xl text-[10px] font-bold tracking-[0.15em] uppercase"
             >
-              Analyze →
+              ANALYZE →
             </button>
           </div>
         </form>
 
-        <div className="flex flex-wrap gap-2 mt-4 justify-center max-w-md">
+        {/* Example chips */}
+        <div className="flex flex-wrap gap-2 mt-4 justify-center max-w-lg">
           {EXAMPLES.map((ex) => (
             <button
               key={ex.label}
               onClick={() => { setQuery(ex.query); setSourceType(ex.type); }}
-              className="text-[11px] px-3 py-1.5 rounded-full border transition-all duration-150 hover:border-[#7c5cfc] hover:text-[#a084ff]"
-              style={{ borderColor: '#2a2a32', color: '#5a5a6e' }}
+              className="hw-button text-[9px] px-3 py-1.5 rounded-xl tracking-wider uppercase"
+              style={{ color: '#8a7355' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#c4832a'}
+              onMouseLeave={e => e.currentTarget.style.color = '#8a7355'}
             >
               {ex.label}
             </button>
           ))}
         </div>
 
-        <div className="mt-20 flex items-center gap-4 opacity-20">
+        {/* Decorative rack units */}
+        <div className="mt-20 flex items-center gap-2 opacity-30">
           {['EQ', 'COMP', 'REVB', 'SAT', 'DLY'].map((label) => (
             <div
               key={label}
-              className="w-12 h-10 rounded-lg border flex items-center justify-center panel-texture"
-              style={{ borderColor: '#2a2a32', background: '#141418' }}
+              className="w-14 h-10 rack-unit rounded-xl flex flex-col items-center justify-center gap-1 panel-texture"
             >
-              <span className="text-[8px] font-mono font-bold text-[#5a5a6e] tracking-widest">{label}</span>
+              <div className="led" style={{ background: '#3d2e1a' }} />
+              <span className="text-[7px] font-bold tracking-[0.2em]" style={{ color: '#8a7355' }}>{label}</span>
             </div>
           ))}
-          <div className="text-[8px] font-mono text-[#3a3a3e] tracking-widest">→ OUTPUT</div>
-                  {error && (
-          <div className="mt-4 px-4 py-3 rounded-xl text-xs text-[#ff6b6b] border border-[#ff6b6b22] bg-[#ff6b6b0a] max-w-md text-center">
+          <div className="text-[8px] tracking-[0.2em]" style={{ color: '#5a4530' }}>→ OUTPUT</div>
+        </div>
+
+        {error && (
+          <div className="mt-4 px-4 py-3 rounded-xl text-[10px] border max-w-lg text-center tracking-wider" style={{ color: '#e05c2a', borderColor: 'rgba(224,92,42,0.2)', background: 'rgba(224,92,42,0.06)' }}>
             {error}
           </div>
         )}
-        </div>
-        
       </main>
     </div>
   );

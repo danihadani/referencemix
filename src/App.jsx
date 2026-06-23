@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Home from './pages/Home';
 import Results from './pages/Results';
 import SavedPresets from './components/SavedPresets';
-import ApiKeyModal from './components/ApiKeyModal';
 import { PRESETS } from './data/presets';
 import { callClaude } from './utils/callClaude';
 import SavedDrawer from './components/SavedDrawer';
@@ -19,8 +18,6 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [showSavedDrawer, setShowSavedDrawer] = useState(false);
-  const [showApiModal, setShowApiModal] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('rm_api_key') || '');
   const [saved, setSaved] = useState(() => {
     try { return JSON.parse(localStorage.getItem('rm_saved') || '[]'); }
     catch { return []; }
@@ -29,11 +26,6 @@ export default function App() {
   const isSaved = result
     ? saved.some((s) => s.id === result.id && s.reference === result.reference)
     : false;
-
-  function saveApiKey(key) {
-    setApiKey(key);
-    localStorage.setItem('rm_api_key', key);
-  }
 
   async function handleAnalyze({ query, sourceType }) {
     setError(null);
@@ -81,9 +73,9 @@ export default function App() {
 
   if (view === 'loading') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#0a0a0c' }}>
-        <div className="w-10 h-10 rounded-full border-2 spin" style={{ borderColor: '#7c5cfc', borderTopColor: 'transparent' }} />
-        <p className="text-[#5a5a6e] text-sm font-mono tracking-wider">Analysing reference…</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#1a1208' }}>
+        <div className="w-10 h-10 rounded-full border-2 spin" style={{ borderColor: '#c4832a', borderTopColor: 'transparent' }} />
+        <p className="text-sm font-mono tracking-wider" style={{ color: '#8a7355' }}>Analysing reference…</p>
       </div>
     );
   }
@@ -96,16 +88,11 @@ export default function App() {
           onBack={() => setView('home')}
           onSave={handleSave}
           isSaved={isSaved}
-          apiKey={apiKey}
-          onOpenApiModal={() => setShowApiModal(true)}
         />
         {saved.length > 0 && (
           <div className="max-w-2xl mx-auto w-full px-4 pb-16">
             <SavedPresets saved={saved} onLoad={handleLoadSaved} onDelete={handleDeleteSaved} />
           </div>
-        )}
-        {showApiModal && (
-          <ApiKeyModal onSave={saveApiKey} onClose={() => setShowApiModal(false)} />
         )}
       </>
     );
@@ -113,10 +100,8 @@ export default function App() {
 
   return (
     <>
-       <Home
+      <Home
         onAnalyze={handleAnalyze}
-        apiKey={apiKey}
-        onOpenApiModal={() => setShowApiModal(true)}
         error={error}
         saved={saved}
         onOpenSaved={() => setShowSavedDrawer(true)}
@@ -125,9 +110,6 @@ export default function App() {
         <div className="max-w-md mx-auto w-full px-4 pb-16">
           <SavedPresets saved={saved} onLoad={handleLoadSaved} onDelete={handleDeleteSaved} />
         </div>
-      )}
-      {showApiModal && (
-        <ApiKeyModal onSave={saveApiKey} onClose={() => setShowApiModal(false)} />
       )}
       {showSavedDrawer && (
         <SavedDrawer

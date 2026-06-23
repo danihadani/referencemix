@@ -1,15 +1,16 @@
 export default function VUMeter({ active = false }) {
   return (
-    <div className="flex items-end gap-[2px] h-8">
-      {[...Array(5)].map((_, i) => (
+    <div className="flex items-end gap-[2px] h-6">
+      {[...Array(8)].map((_, i) => (
         <div
           key={i}
-          className={`w-[3px] rounded-sm transition-all duration-300 ${active ? 'vu-bar' : 'h-[15%]'}`}
+          className={`w-[4px] rounded-xl transition-all duration-150 ${active ? 'vu-bar' : ''}`}
           style={{
+            height: active ? undefined : '15%',
             background: active
-              ? i < 3 ? '#3ddc84' : i < 4 ? '#ff9f43' : '#ff6b9d'
-              : '#2a2a32',
-            animationDelay: `${i * 0.12}s`,
+              ? i < 5 ? '#c4832a' : i < 7 ? '#e05c2a' : '#e03a1a'
+              : '#3d2e1a',
+            animationDelay: `${i * 0.08}s`,
           }}
         />
       ))}

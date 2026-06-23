@@ -5,8 +5,9 @@ export default function SavedPresets({ saved, onLoad, onDelete }) {
 
   return (
     <div className="mt-8">
-      <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#5a5a6e] mb-3">
-        ★ Saved Chains
+      <div className="text-[9px] tracking-[0.2em] uppercase mb-3 flex items-center gap-2" style={{ color: '#8a7355' }}>
+        <div className="led led-on" />
+        SAVED CHAINS
       </div>
       <div className="flex flex-wrap gap-2">
         {saved.map((preset) => {
@@ -14,14 +15,15 @@ export default function SavedPresets({ saved, onLoad, onDelete }) {
           return (
             <div
               key={preset.savedAt}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#2a2a32] bg-[#141418] group"
+              className="flex items-center gap-2 px-3 py-2 rack-unit rounded-xl group"
             >
               <button
                 onClick={() => onLoad(preset)}
-                className="text-xs text-[#9090a8] hover:text-[#e8e8f0] transition-colors text-left"
+                className="text-[10px] text-left flex items-center gap-2 tracking-wide"
+                style={{ color: '#b89e7a' }}
               >
                 <span
-                  className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded mr-2"
+                  className="text-[8px] font-bold tracking-[0.15em] px-1.5 py-0.5 rounded-xl"
                   style={{ background: cfg.bg, color: cfg.color }}
                 >
                   {cfg.label.toUpperCase()}
@@ -30,7 +32,10 @@ export default function SavedPresets({ saved, onLoad, onDelete }) {
               </button>
               <button
                 onClick={() => onDelete(preset.savedAt)}
-                className="text-[#3a3a4e] hover:text-[#ff6b6b] transition-colors text-xs ml-1 opacity-0 group-hover:opacity-100"
+                className="text-[10px] ml-1 opacity-0 group-hover:opacity-100 transition-all"
+                style={{ color: '#5a4530' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#e05c2a'}
+                onMouseLeave={e => e.currentTarget.style.color = '#5a4530'}
               >
                 ✕
               </button>
