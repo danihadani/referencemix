@@ -42,17 +42,17 @@ Return ONLY valid JSON, no markdown:
 }
 
 Chain: 4-6 nodes in correct signal flow order. Colors: #3ddc84, #7c5cfc, #ff6b9d, #ff9f43, #00d2ff. Abbr: max 4 chars. Focus specifically on ${sourceType} processing for this reference.`,
+      messages: [{ role: 'user', content: `Reference: ${query}\nSource type: ${sourceType}` }],
     }),
   });
 
-const data = await response.json();
+  const data = await response.json();
 
-if (!response.ok) {
-  console.error('Anthropic error:', JSON.stringify(data));
-  return res.status(500).json({ error: data.error?.message || 'API error' });
-}
+  if (!response.ok) {
+    console.error('Anthropic error:', JSON.stringify(data));
+    return res.status(500).json({ error: data.error?.message || 'API error' });
+  }
 
-const text = data.content[0].text;
   const text = data.content[0].text;
   const cleaned = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
   res.status(200).json(JSON.parse(cleaned));
