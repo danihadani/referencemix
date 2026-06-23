@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Home from './pages/Home';
 import Results from './pages/Results';
-import SavedPresets from './components/SavedPresets';
 import { PRESETS } from './data/presets';
 import { callClaude } from './utils/callClaude';
 import SavedDrawer from './components/SavedDrawer';
@@ -82,19 +81,12 @@ export default function App() {
 
   if (view === 'results' && result) {
     return (
-      <>
-        <Results
-          result={result}
-          onBack={() => setView('home')}
-          onSave={handleSave}
-          isSaved={isSaved}
-        />
-        {saved.length > 0 && (
-          <div className="max-w-2xl mx-auto w-full px-4 pb-16">
-            <SavedPresets saved={saved} onLoad={handleLoadSaved} onDelete={handleDeleteSaved} />
-          </div>
-        )}
-      </>
+      <Results
+        result={result}
+        onBack={() => setView('home')}
+        onSave={handleSave}
+        isSaved={isSaved}
+      />
     );
   }
 
@@ -106,11 +98,6 @@ export default function App() {
         saved={saved}
         onOpenSaved={() => setShowSavedDrawer(true)}
       />
-      {saved.length > 0 && (
-        <div className="max-w-md mx-auto w-full px-4 pb-16">
-          <SavedPresets saved={saved} onLoad={handleLoadSaved} onDelete={handleDeleteSaved} />
-        </div>
-      )}
       {showSavedDrawer && (
         <SavedDrawer
           saved={saved}
