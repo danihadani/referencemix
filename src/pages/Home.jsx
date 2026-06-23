@@ -176,20 +176,6 @@ export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
           ))}
         </div>
 
-        {/* Decorative rack units */}
-        <div className="mt-20 flex items-center gap-2 opacity-30">
-          {['EQ', 'COMP', 'REVB', 'SAT', 'DLY'].map((label) => (
-            <div
-              key={label}
-              className="w-14 h-10 rack-unit rounded-xl flex flex-col items-center justify-center gap-1 panel-texture"
-            >
-              <div className="led" style={{ background: '#3d2e1a' }} />
-              <span className="text-[7px] font-bold tracking-[0.2em]" style={{ color: '#8a7355' }}>{label}</span>
-            </div>
-          ))}
-          <div className="text-[8px] tracking-[0.2em]" style={{ color: '#5a4530' }}>→ OUTPUT</div>
-        </div>
-
         {error && (
           <div className="mt-4 px-4 py-3 rounded-xl text-[10px] border max-w-lg text-center tracking-wider" style={{ color: '#e05c2a', borderColor: 'rgba(224,92,42,0.2)', background: 'rgba(224,92,42,0.06)' }}>
             {error}
