@@ -11,6 +11,12 @@ const COMPANY_LINK = {
   'safari audio':    (p) => `https://safariaudio.com/search?q=${encodeURIComponent(p)}`,
 };
 
+function officialLink(company, plugin) {
+  const fn = COMPANY_LINK[(company || '').toLowerCase().trim()];
+  if (fn) return fn(plugin);
+  return `https://www.google.com/search?q=${encodeURIComponent(`${company} ${plugin} plugin`)}`;
+}
+
 const FREE_LINK = [
   ['supermassive',     'https://valhalladsp.com/shop/reverb/valhalla-supermassive/'],
   ['valhalla freq',    'https://valhalladsp.com/shop/reverb/valhalla-freq-echo/'],
@@ -26,21 +32,12 @@ const FREE_LINK = [
   ['analog obsession', 'https://analogobsession.com/'],
 ];
 
-function officialLink(company, plugin) {
-  const fn = COMPANY_LINK[(company || '').toLowerCase().trim()];
-  if (fn) return fn(plugin);
-  // Fallback for unknown company → Google
-  return `https://www.google.com/search?q=${encodeURIComponent(`${company} ${plugin} plugin`)}`;
-}
-
 function freeLink(plugin) {
   const name = (plugin || '').toLowerCase();
   const hit = FREE_LINK.find(([key]) => name.includes(key));
   if (hit) return hit[1];
-  // Fallback for anything not in the map → Google
   return `https://www.google.com/search?q=${encodeURIComponent(`${plugin} free plugin download`)}`;
 }
-
 
 function LinkPill({ href, children, accent }) {
   return (
@@ -86,60 +83,65 @@ export default function PluginSettings({ settings }) {
         <div className="led led-on" />
         SUGGESTED PLUGINS & SETTINGS
       </div>
-      {settings.map((s, i) => (
-        <div key={i} className="rack-unit rounded-xl overflow-hidden">
-          <button
-            className="w-full flex items-center justify-between px-4 py-3 transition-colors text-left"
-            style={{ background: 'transparent' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,200,100,0.03)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-            onClick={() => setOpen(open === i ? null : i)}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`led ${open === i ? 'led-on' : ''}`} />
-                           <div>
-                <div className="text-[11px] font-bold tracking-wider" style={{ color: '#f0e6c8' }}>{s.category.toUpperCase()}</div>
-              </div>
-            </div>
-            <span
-              className="text-[10px] transition-transform duration-200"
-              style={{ color: '#8a7355', transform: open === i ? 'rotate(180deg)' : 'rotate(0deg)' }}
+      {settings.map((s, i) => {
+        const options = s.options || (s.plugin ? [{ plugin: s.plugin, company: s.company }] : []);
+        return (
+          <div key={i} className="rack-unit rounded-xl overflow-hidden">
+            <button
+              className="w-full flex items-center justify-between px-4 py-3 transition-colors text-left"
+              style={{ background: 'transparent' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,200,100,0.03)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              onClick={() => setOpen(open === i ? null : i)}
             >
-              ▼
-            </span>
-          </button>
-          {open === i && (
-            <div className="px-4 pb-4" style={{ borderTop: '1px solid #3d2e1a' }}>
-              <div className="flex flex-col gap-2 py-3 mb-2">
-                <div className="flex items-center justify-between gap-2 flex-wrap rounded-xl p-3" style={{ background: '#120d07', border: '1px solid #3d2e1a' }}>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-[7px] font-bold tracking-[0.15em] px-1.5 py-0.5 rounded" style={{ background: '#c4832a22', color: '#c4832a' }}>PREMIUM</span>
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-bold tracking-wide truncate" style={{ color: '#f0e6c8' }}>{s.plugin}</div>
-                      {s.company && <div className="text-[8px] tracking-[0.15em]" style={{ color: '#8a7355' }}>{s.company.toUpperCase()}</div>}
-                    </div>
-                  </div>
-                  <LinkPill href={officialLink(s.company || '', s.plugin)} accent="#c4832a">VIEW ↗</LinkPill>
+              <div className="flex items-center gap-3">
+                <div className={`led ${open === i ? 'led-on' : ''}`} />
+                <div>
+                  <div className="text-[11px] font-bold tracking-wider" style={{ color: '#f0e6c8' }}>{s.category.toUpperCase()}</div>
                 </div>
-                {s.free && (
-                  <div className="flex items-center justify-between gap-2 flex-wrap rounded-xl p-3" style={{ background: '#120d07', border: '1px solid #3d2e1a' }}>
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[7px] font-bold tracking-[0.15em] px-1.5 py-0.5 rounded" style={{ background: '#3ddc8422', color: '#3ddc84' }}>FREE</span>
-                      <div className="text-[10px] font-bold tracking-wide truncate" style={{ color: '#f0e6c8' }}>{s.free}</div>
+              </div>
+              <span
+                className="text-[10px] transition-transform duration-200"
+                style={{ color: '#8a7355', transform: open === i ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              >
+                ▼
+              </span>
+            </button>
+            {open === i && (
+              <div className="px-4 pb-4" style={{ borderTop: '1px solid #3d2e1a' }}>
+                <div className="flex flex-col gap-2 py-3 mb-2">
+                  {options.map((opt, k) => (
+                    <div key={k} className="flex items-center justify-between gap-2 flex-wrap rounded-xl p-3" style={{ background: '#120d07', border: '1px solid #3d2e1a' }}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-[7px] font-bold tracking-[0.15em] px-1.5 py-0.5 rounded" style={{ background: '#c4832a22', color: '#c4832a' }}>PREMIUM</span>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold tracking-wide truncate" style={{ color: '#f0e6c8' }}>{opt.plugin}</div>
+                          {opt.company && <div className="text-[8px] tracking-[0.15em]" style={{ color: '#8a7355' }}>{opt.company.toUpperCase()}</div>}
+                        </div>
+                      </div>
+                      <LinkPill href={officialLink(opt.company || '', opt.plugin)} accent="#c4832a">VIEW ↗</LinkPill>
                     </div>
-                    <LinkPill href={freeLink(s.free)} accent="#3ddc84">GET ↗</LinkPill>
-                  </div>
-                )}
+                  ))}
+                  {s.free && (
+                    <div className="flex items-center justify-between gap-2 flex-wrap rounded-xl p-3" style={{ background: '#120d07', border: '1px solid #3d2e1a' }}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-[7px] font-bold tracking-[0.15em] px-1.5 py-0.5 rounded" style={{ background: '#3ddc8422', color: '#3ddc84' }}>FREE</span>
+                        <div className="text-[10px] font-bold tracking-wide truncate" style={{ color: '#f0e6c8' }}>{s.free}</div>
+                      </div>
+                      <LinkPill href={freeLink(s.free)} accent="#3ddc84">GET ↗</LinkPill>
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {s.params.map((p, j) => (
+                    <ParamCell key={j} param={p} />
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {s.params.map((p, j) => (
-                  <ParamCell key={j} param={p} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

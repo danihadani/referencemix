@@ -22,11 +22,9 @@ When given a reference track and source type, analyze the SPECIFIC sonic charact
 - Specific parameter ranges that match the actual recording
 
 PLUGIN RULES — very important:
-- For each settings stage, the "plugin" field MUST be a real, currently-sold premium plugin made by ONE of these companies ONLY: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
-- Set "company" to the EXACT company name from that list (e.g. "FabFilter", "Universal Audio", "Waves", "Valhalla DSP", "Soundtoys", "Safari Audio").
-- Use the plugin's real product name (e.g. "FabFilter Pro-Q 3", "Soundtoys Decapitator", "Valhalla VintageVerb", "Waves CLA-2A", "UAD 1176").
-- Also provide "free": ONE high-quality FREE plugin that does the same job, chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.
-
+- For each stage, provide an "options" array of 2-3 premium plugins that each achieve this stage, from DIFFERENT companies when possible, ONLY from: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
+- Each option: { "plugin": real product name, "company": exact company name }.
+- Also provide "free": ONE free plugin chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.
 Return ONLY valid JSON, no markdown:
 {
   "reference": "Artist — Song",
@@ -36,15 +34,19 @@ Return ONLY valid JSON, no markdown:
   "chain": [
     { "id": "unique_id", "name": "Plugin Name", "abbr": "ABBR", "color": "#hexcolor", "category": "Category" }
   ],
-  "settings": [
+   "settings": [
     {
-      "plugin": "FabFilter Pro-Q 3",
-      "company": "FabFilter",
       "category": "EQ",
+      "options": [
+        { "plugin": "FabFilter Pro-Q 3", "company": "FabFilter" },
+        { "plugin": "Waves SSL E-Channel", "company": "Waves" }
+      ],
       "free": "TDR Nova",
       "params": [
         { "name": "Parameter", "value": "Specific Value", "note": "Why this specific setting for this reference" }
       ]
+    }
+  ]
     }
   ]
 }
