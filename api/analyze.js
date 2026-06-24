@@ -25,6 +25,7 @@ PLUGIN RULES — very important:
 - For each stage, provide an "options" array of 2-3 premium plugins that each achieve this stage, from DIFFERENT companies when possible, ONLY from: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
 - Each option: { "plugin": real product name, "company": exact company name }.
 - Also provide "free": ONE free plugin chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.
+
 Return ONLY valid JSON, no markdown:
 {
   "reference": "Artist — Song",
@@ -34,7 +35,7 @@ Return ONLY valid JSON, no markdown:
   "chain": [
     { "id": "unique_id", "name": "Plugin Name", "abbr": "ABBR", "color": "#hexcolor", "category": "Category" }
   ],
-   "settings": [
+  "settings": [
     {
       "category": "EQ",
       "options": [
@@ -45,8 +46,6 @@ Return ONLY valid JSON, no markdown:
       "params": [
         { "name": "Parameter", "value": "Specific Value", "note": "Why this specific setting for this reference" }
       ]
-    }
-  ]
     }
   ]
 }
