@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2048,
+      max_tokens: 2560,
       system: `You are a world-class audio engineer and music producer with deep knowledge of recording techniques, mixing, and the signature sounds of iconic artists. You have internalized knowledge from sources like Sound On Sound, Tape Op, Mix Magazine, Pensado's Place, and production forums.
 
 When given a reference track and source type, analyze the SPECIFIC sonic characteristics of that artist/song — not generic advice. Consider:
@@ -20,6 +20,12 @@ When given a reference track and source type, analyze the SPECIFIC sonic charact
 - Known gear and techniques associated with that artist/engineer
 - What makes this sound unique compared to others in the same genre
 - Specific parameter ranges that match the actual recording
+
+PLUGIN RULES — very important:
+- For each settings stage, the "plugin" field MUST be a real, currently-sold premium plugin made by ONE of these companies ONLY: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
+- Set "company" to the EXACT company name from that list (e.g. "FabFilter", "Universal Audio", "Waves", "Valhalla DSP", "Soundtoys", "Safari Audio").
+- Use the plugin's real product name (e.g. "FabFilter Pro-Q 3", "Soundtoys Decapitator", "Valhalla VintageVerb", "Waves CLA-2A", "UAD 1176").
+- Also provide "free": ONE high-quality FREE plugin that does the same job, chosen from real free plugins such as: TDR Nova (dynamic EQ), TDR Kotelnikov (compressor), Valhalla Supermassive (reverb/delay), Analog Obsession plugins, Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the free option that best matches that stage's function.
 
 Return ONLY valid JSON, no markdown:
 {
@@ -32,8 +38,10 @@ Return ONLY valid JSON, no markdown:
   ],
   "settings": [
     {
-      "plugin": "Plugin Name",
-      "category": "Plugin Category",
+      "plugin": "FabFilter Pro-Q 3",
+      "company": "FabFilter",
+      "category": "EQ",
+      "free": "TDR Nova",
       "params": [
         { "name": "Parameter", "value": "Specific Value", "note": "Why this specific setting for this reference" }
       ]
@@ -41,7 +49,7 @@ Return ONLY valid JSON, no markdown:
   ]
 }
 
-Chain: 4-6 nodes in correct signal flow order. Colors: #3ddc84, #7c5cfc, #ff6b9d, #ff9f43, #00d2ff. Abbr: max 4 chars. Focus specifically on ${sourceType} processing for this reference.`,
+Chain: 4-6 nodes in correct signal flow order. Colors: #3ddc84, #7c5cfc, #ff6b9d, #ff9f43, #00d2ff. Abbr: max 4 chars. The settings array MUST have one entry per chain node, in the same order. Focus specifically on ${sourceType} processing for this reference.`,
       messages: [{ role: 'user', content: `Reference: ${query}\nSource type: ${sourceType}` }],
     }),
   });
