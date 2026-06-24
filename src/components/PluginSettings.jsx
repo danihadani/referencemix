@@ -65,9 +65,8 @@ export default function PluginSettings({ settings }) {
           >
             <div className="flex items-center gap-3">
               <div className={`led ${open === i ? 'led-on' : ''}`} />
-              <div>
-                <div className="text-[11px] font-bold tracking-wider" style={{ color: '#f0e6c8' }}>{s.plugin.toUpperCase()}</div>
-                <div className="text-[8px] tracking-[0.15em] mt-0.5" style={{ color: '#8a7355' }}>{s.category.toUpperCase()}</div>
+                           <div>
+                <div className="text-[11px] font-bold tracking-wider" style={{ color: '#f0e6c8' }}>{s.category.toUpperCase()}</div>
               </div>
             </div>
             <span
