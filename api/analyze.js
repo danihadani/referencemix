@@ -25,7 +25,7 @@ PLUGIN RULES — very important:
 - For each settings stage, the "plugin" field MUST be a real, currently-sold premium plugin made by ONE of these companies ONLY: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
 - Set "company" to the EXACT company name from that list (e.g. "FabFilter", "Universal Audio", "Waves", "Valhalla DSP", "Soundtoys", "Safari Audio").
 - Use the plugin's real product name (e.g. "FabFilter Pro-Q 3", "Soundtoys Decapitator", "Valhalla VintageVerb", "Waves CLA-2A", "UAD 1176").
-- Also provide "free": ONE high-quality FREE plugin that does the same job, chosen from real free plugins such as: TDR Nova (dynamic EQ), TDR Kotelnikov (compressor), Valhalla Supermassive (reverb/delay), Analog Obsession plugins, Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the free option that best matches that stage's function.
+- Also provide "free": ONE high-quality FREE plugin that does the same job, chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.
 
 Return ONLY valid JSON, no markdown:
 {

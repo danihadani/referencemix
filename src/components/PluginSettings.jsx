@@ -1,14 +1,46 @@
 import { useState } from 'react';
 
+const COMPANY_LINK = {
+  'fabfilter':       () => 'https://www.fabfilter.com/products',
+  'universal audio': (p) => `https://www.uaudio.com/search?q=${encodeURIComponent(p)}`,
+  'uad':             (p) => `https://www.uaudio.com/search?q=${encodeURIComponent(p)}`,
+  'waves':           (p) => `https://www.waves.com/search?q=${encodeURIComponent(p)}`,
+  'valhalla dsp':    () => 'https://valhalladsp.com/shop/',
+  'valhalla':        () => 'https://valhalladsp.com/shop/',
+  'soundtoys':       (p) => `https://www.soundtoys.com/?s=${encodeURIComponent(p)}`,
+  'safari audio':    (p) => `https://safariaudio.com/search?q=${encodeURIComponent(p)}`,
+};
+
+const FREE_LINK = [
+  ['supermassive',     'https://valhalladsp.com/shop/reverb/valhalla-supermassive/'],
+  ['valhalla freq',    'https://valhalladsp.com/shop/reverb/valhalla-freq-echo/'],
+  ['valhalla space',   'https://valhalladsp.com/shop/modulation/valhalla-space-modulator/'],
+  ['tdr nova',         'https://www.tokyodawn.net/tdr-nova/'],
+  ['nova',             'https://www.tokyodawn.net/tdr-nova/'],
+  ['kotelnikov',       'https://www.tokyodawn.net/tdr-kotelnikov/'],
+  ['slickeq',          'https://www.tokyodawn.net/tdr-vos-slickeq/'],
+  ['slick eq',         'https://www.tokyodawn.net/tdr-vos-slickeq/'],
+  ['span',             'https://www.voxengo.com/product/span/'],
+  ['saturation knob',  'https://www.softube.com/saturation-knob'],
+  ['vital',            'https://vital.audio/'],
+  ['analog obsession', 'https://analogobsession.com/'],
+];
+
 function officialLink(company, plugin) {
-  const q = encodeURIComponent(`${company} ${plugin} plugin`);
-  return `https://www.google.com/search?q=${q}`;
+  const fn = COMPANY_LINK[(company || '').toLowerCase().trim()];
+  if (fn) return fn(plugin);
+  // Fallback for unknown company → Google
+  return `https://www.google.com/search?q=${encodeURIComponent(`${company} ${plugin} plugin`)}`;
 }
 
 function freeLink(plugin) {
-  const q = encodeURIComponent(`${plugin} free plugin download`);
-  return `https://www.google.com/search?q=${q}`;
+  const name = (plugin || '').toLowerCase();
+  const hit = FREE_LINK.find(([key]) => name.includes(key));
+  if (hit) return hit[1];
+  // Fallback for anything not in the map → Google
+  return `https://www.google.com/search?q=${encodeURIComponent(`${plugin} free plugin download`)}`;
 }
+
 
 function LinkPill({ href, children, accent }) {
   return (
