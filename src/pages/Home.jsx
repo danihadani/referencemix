@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import VUMeter from '../components/VUMeter';
 
-const EXAMPLES = [
-  { label: 'Vocal like Billie Eilish', query: 'Billie Eilish — Happier Than Ever', type: 'vocal' },
-  { label: 'Guitar like Tame Impala', query: 'Tame Impala — The Less I Know The Better', type: 'guitar' },
-  { label: 'Drum room like Arctic Monkeys', query: 'Arctic Monkeys AM', type: 'drums' },
-  { label: 'Full mix like Frank Ocean', query: 'Frank Ocean — Blonde', type: 'mix' },
-];
 
 const SOURCE_TYPES = ['vocal', 'guitar', 'drums', 'bass', 'synth', 'piano', 'mix', 'other'];
 
@@ -146,7 +140,7 @@ export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); }
               }}
-              placeholder={`E.G. BILLIE EILISH — HAPPIER THAN EVER / ${sourceType.toUpperCase()}`}
+              placeholder="TYPE YOUR REFERENCE HERE — ARTIST, SONG, OR VIBE…"
               rows={2}
               className="w-full bg-transparent text-[11px] resize-none outline-none px-5 pt-4 pb-14 leading-relaxed tracking-wider"
               style={{ color: '#f0e6c8', fontFamily: "'JetBrains Mono', monospace" }}
@@ -159,22 +153,6 @@ export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
             </button>
           </div>
         </form>
-
-        {/* Example chips */}
-        <div className="flex flex-wrap gap-2 mt-4 justify-center max-w-lg">
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex.label}
-              onClick={() => { setQuery(ex.query); setSourceType(ex.type); }}
-              className="hw-button text-[9px] px-3 py-1.5 rounded-xl tracking-wider uppercase"
-              style={{ color: '#8a7355' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#c4832a'}
-              onMouseLeave={e => e.currentTarget.style.color = '#8a7355'}
-            >
-              {ex.label}
-            </button>
-          ))}
-        </div>
 
         {error && (
           <div className="mt-4 px-4 py-3 rounded-xl text-[10px] border max-w-lg text-center tracking-wider" style={{ color: '#e05c2a', borderColor: 'rgba(224,92,42,0.2)', background: 'rgba(224,92,42,0.06)' }}>
