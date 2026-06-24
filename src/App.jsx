@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import Home from './pages/Home';
 import Results from './pages/Results';
-import { PRESETS } from './data/presets';
 import { callClaude } from './utils/callClaude';
 import SavedDrawer from './components/SavedDrawer';
 
-function findPreset(query) {
-  const lower = query.toLowerCase();
-  return PRESETS.find((p) =>
-    p.keywords.some((kw) => lower.includes(kw))
-  ) || null;
-}
 
 export default function App() {
   const [view, setView] = useState('home');
@@ -28,13 +21,6 @@ export default function App() {
 
   async function handleAnalyze({ query, sourceType }) {
     setError(null);
-    const preset = findPreset(query);
-    if (preset) {
-      setResult({ ...preset });
-      setView('results');
-      return;
-    }
-
     setView('loading');
     try {
       const data = await callClaude(query, sourceType);
