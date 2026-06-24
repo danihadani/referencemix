@@ -9,6 +9,7 @@ const COMPANY_LINK = {
   'valhalla':        () => 'https://valhalladsp.com/shop/',
   'soundtoys':       (p) => `https://www.soundtoys.com/?s=${encodeURIComponent(p)}`,
   'safari audio':    (p) => `https://safariaudio.com/search?q=${encodeURIComponent(p)}`,
+  'softube':         () => 'https://www.softube.com/plug-ins/saturation-knob',
 };
 
 function officialLink(company, plugin) {
@@ -27,7 +28,7 @@ const FREE_LINK = [
   ['slickeq',          'https://www.tokyodawn.net/tdr-vos-slickeq/'],
   ['slick eq',         'https://www.tokyodawn.net/tdr-vos-slickeq/'],
   ['span',             'https://www.voxengo.com/product/span/'],
-  ['saturation knob',  'https://www.softube.com/saturation-knob'],
+  ['saturation knob',  'https://www.softube.com/plug-ins/saturation-knob'],
   ['vital',            'https://vital.audio/'],
   ['analog obsession', 'https://analogobsession.com/'],
 ];
