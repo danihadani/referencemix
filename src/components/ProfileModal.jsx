@@ -5,13 +5,14 @@ import { PLUGIN_CATALOG } from '../data/pluginCatalog';
 const DAWS = ['Logic Pro', 'Ableton Live', 'Pro Tools', 'FL Studio', 'Cubase', 'Studio One', 'Reaper', 'GarageBand', 'Other'];
 
 export default function ProfileModal({ user, onClose }) {
-  const [mode, setMode] = useState('view'); // 'view' | 'edit'
+  const [mode, setMode] = useState('view');
   const [daw, setDaw] = useState('');
   const [mics, setMics] = useState([]);
   const [micInput, setMicInput] = useState('');
   const [iface, setIface] = useState('');
   const [plugins, setPlugins] = useState([]);
   const [pluginInput, setPluginInput] = useState('');
+  const [openBrand, setOpenBrand] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasProfile, setHasProfile] = useState(false);
@@ -50,7 +51,6 @@ export default function ProfileModal({ user, onClose }) {
     setPluginInput('');
   };
 
-  // plugins not present in any catalog list = manually added
   const catalogNames = Object.values(PLUGIN_CATALOG).flat();
   const customPlugins = plugins.filter(p => !catalogNames.includes(p));
 
@@ -154,29 +154,43 @@ export default function ProfileModal({ user, onClose }) {
 
             <div>
               <div className="text-[8px] tracking-[0.2em] uppercase mb-2" style={labelStyle}>Plugins I Own</div>
-              <div className="space-y-3">
-                {Object.entries(PLUGIN_CATALOG).map(([brand, list]) => (
-                  list.length > 0 && (
-                    <div key={brand}>
-                      <div className="text-[8px] tracking-[0.15em] uppercase mb-1.5" style={{ color: '#c4832a' }}>{brand}</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {list.map(name => (
-                          <button
-                            key={name}
-                            onClick={() => togglePlugin(name)}
-                            className={`text-[9px] px-2 py-1 rounded-lg tracking-wide transition-all ${plugins.includes(name) ? 'hw-button-active' : 'hw-button'}`}
-                            style={{ color: plugins.includes(name) ? '#1a1208' : '#8a7355' }}
-                          >
-                            {name}
-                          </button>
-                        ))}
-                      </div>
+              <div className="space-y-1.5">
+                {Object.entries(PLUGIN_CATALOG).map(([brand, list]) => {
+                  if (!list.length) return null;
+                  const count = list.filter(n => plugins.includes(n)).length;
+                  const isOpen = openBrand === brand;
+                  return (
+                    <div key={brand} className="rack-unit rounded-xl overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setOpenBrand(isOpen ? null : brand)}
+                        className="w-full flex items-center justify-between px-3 py-2.5 text-left"
+                      >
+                        <span className="text-[9px] tracking-[0.15em] uppercase font-bold" style={{ color: '#c4832a' }}>
+                          {brand}{count > 0 && <span style={{ color: '#8a7355' }}> · {count}</span>}
+                        </span>
+                        <span className="text-[9px] transition-transform duration-200" style={{ color: '#8a7355', transform: isOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      </button>
+                      {isOpen && (
+                        <div className="flex flex-wrap gap-1.5 px-3 pb-3" style={{ borderTop: '1px solid #3d2e1a', paddingTop: '0.6rem' }}>
+                          {list.map(name => (
+                            <button
+                              key={name}
+                              type="button"
+                              onClick={() => togglePlugin(name)}
+                              className={`text-[9px] px-2 py-1 rounded-lg tracking-wide transition-all ${plugins.includes(name) ? 'hw-button-active' : 'hw-button'}`}
+                              style={{ color: plugins.includes(name) ? '#1a1208' : '#8a7355' }}
+                            >
+                              {name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )
-                ))}
+                  );
+                })}
               </div>
 
-              {/* Manual add */}
               <div className="mt-3">
                 <div className="text-[8px] tracking-[0.15em] uppercase mb-1.5" style={labelStyle}>Add Your Own</div>
                 <div className="flex gap-1.5 mb-2">
