@@ -1,19 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Results from './pages/Results';
 import { callClaude } from './utils/callClaude';
 import SavedDrawer from './components/SavedDrawer';
-
+import AuthModal from './components/AuthModal';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   const [view, setView] = useState('home');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [showSavedDrawer, setShowSavedDrawer] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [user, setUser] = useState(null);
   const [saved, setSaved] = useState(() => {
     try { return JSON.parse(localStorage.getItem('rm_saved') || '[]'); }
     catch { return []; }
   });
+
+  // Track auth session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const isSaved = result
     ? saved.some((s) => s.id === result.id && s.reference === result.reference)
@@ -56,6 +68,11 @@ export default function App() {
     });
   }
 
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    setUser(null);
+  }
+
   if (view === 'loading') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#1a1208' }}>
@@ -83,6 +100,9 @@ export default function App() {
         error={error}
         saved={saved}
         onOpenSaved={() => setShowSavedDrawer(true)}
+        user={user}
+        onOpenAuth={() => setShowAuth(true)}
+        onSignOut={handleSignOut}
       />
       {showSavedDrawer && (
         <SavedDrawer
@@ -90,6 +110,12 @@ export default function App() {
           onLoad={handleLoadSaved}
           onDelete={handleDeleteSaved}
           onClose={() => setShowSavedDrawer(false)}
+        />
+      )}
+      {showAuth && (
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onAuth={setUser}
         />
       )}
     </>

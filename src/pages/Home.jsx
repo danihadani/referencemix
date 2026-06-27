@@ -4,7 +4,7 @@ import VUMeter from '../components/VUMeter';
 
 const SOURCE_TYPES = ['vocal', 'guitar', 'drums', 'bass', 'synth', 'piano', 'mix', 'other'];
 
-export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
+export default function Home({ onAnalyze, error, saved, onOpenSaved, user, onOpenAuth, onSignOut }) {
   const [query, setQuery] = useState('');
   const [sourceType, setSourceType] = useState('vocal');
   const [customType, setCustomType] = useState('');
@@ -50,19 +50,37 @@ export default function Home({ onAnalyze, error, saved, onOpenSaved }) {
     </div>
   </div>
 
-  <div className="flex items-center gap-4">
-    <VUMeter active={focused} />
-    {saved && saved.length > 0 && (
-      <button
-        onClick={onOpenSaved}
-        className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
-        style={{ color: '#c4832a' }}
-      >
-        ★ {saved.length}
-      </button>
-    )}
-    <div className="screw" />
-  </div>
+         <div className="flex items-center gap-4">
+          <VUMeter active={focused} />
+          {saved && saved.length > 0 && (
+            <button
+              onClick={onOpenSaved}
+              className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+              style={{ color: '#c4832a' }}
+            >
+              ★ {saved.length}
+            </button>
+          )}
+          {user ? (
+            <button
+              onClick={onSignOut}
+              className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+              style={{ color: '#8a7355' }}
+              title={user.email}
+            >
+              ⏻ SIGN OUT
+            </button>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+              style={{ color: '#c4832a' }}
+            >
+              SIGN IN
+            </button>
+          )}
+          <div className="screw" />
+        </div>
 </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
