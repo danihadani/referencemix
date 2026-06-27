@@ -4,7 +4,7 @@ import VUMeter from '../components/VUMeter';
 
 const SOURCE_TYPES = ['vocal', 'guitar', 'drums', 'bass', 'synth', 'piano', 'mix', 'other'];
 
-export default function Home({ onAnalyze, error, saved, onOpenSaved, user, onOpenAuth, onSignOut }) {
+export default function Home({ onAnalyze, error, saved, onOpenSaved, user, onOpenAuth, onSignOut, onOpenProfile }) {
   const [query, setQuery] = useState('');
   const [sourceType, setSourceType] = useState('vocal');
   const [customType, setCustomType] = useState('');
@@ -61,15 +61,24 @@ export default function Home({ onAnalyze, error, saved, onOpenSaved, user, onOpe
               ★ {saved.length}
             </button>
           )}
-          {user ? (
-            <button
-              onClick={onSignOut}
-              className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
-              style={{ color: '#8a7355' }}
-              title={user.email}
-            >
-              ⏻ SIGN OUT
-            </button>
+                    {user ? (
+            <>
+              <button
+                onClick={onOpenProfile}
+                className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+                style={{ color: '#c4832a' }}
+              >
+                🎛 MY STUDIO
+              </button>
+              <button
+                onClick={onSignOut}
+                className="hw-button flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wider"
+                style={{ color: '#8a7355' }}
+                title={user.email}
+              >
+                ⏻
+              </button>
+            </>
           ) : (
             <button
               onClick={onOpenAuth}

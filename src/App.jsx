@@ -4,6 +4,7 @@ import Results from './pages/Results';
 import { callClaude } from './utils/callClaude';
 import SavedDrawer from './components/SavedDrawer';
 import AuthModal from './components/AuthModal';
+import ProfileModal from './components/ProfileModal';
 import { supabase } from './lib/supabase';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [showSavedDrawer, setShowSavedDrawer] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [user, setUser] = useState(null);
   const [saved, setSaved] = useState(() => {
     try { return JSON.parse(localStorage.getItem('rm_saved') || '[]'); }
@@ -103,6 +105,7 @@ export default function App() {
         user={user}
         onOpenAuth={() => setShowAuth(true)}
         onSignOut={handleSignOut}
+        onOpenProfile={() => setShowProfile(true)}
       />
       {showSavedDrawer && (
         <SavedDrawer
@@ -116,6 +119,12 @@ export default function App() {
         <AuthModal
           onClose={() => setShowAuth(false)}
           onAuth={setUser}
+        />
+      )}
+      {showProfile && user && (
+        <ProfileModal
+          user={user}
+          onClose={() => setShowProfile(false)}
         />
       )}
     </>
