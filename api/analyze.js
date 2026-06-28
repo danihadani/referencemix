@@ -20,7 +20,7 @@ PERSONALIZATION RULES:
 - In each stage's "options" array, PRIORITIZE plugins the user already owns — list them FIRST and set "owned": true on them.
 - You may also recommend the DAW's built-in stock plugins as an owned option (set "owned": true) when relevant.
 - Still include 1-2 premium options they don't own (owned: false) so they have aspirational picks.
-- Factor the user's microphone and interface character into the "why" text and parameter "note" fields (e.g. a bright condenser needs less presence boost; a clean preamp benefits from added saturation).`;
+- ONLY factor microphone/preamp into the advice for acoustically MIC'D sources (vocals, acoustic guitar, live drums, etc.). For DI or electronic sources (bass, synth, keys, programmed drums, full mix), the mic and interface are IRRELEVANT — do not mention them at all.`;
   }
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -45,6 +45,7 @@ ACCURACY RULES — critical:
 - Use the reference EXACTLY as the user typed it. NEVER correct, change, or "fix" the artist or song name, even if it looks like a misspelling — niche artists have unusual names (e.g. "biig piig" is a real artist, not "big pig").
 - If you are NOT confident about the specific track's production, DO NOT invent details. Instead base your advice on the artist's general style or the genre, and reflect that honestly in the "why" field (e.g. "Based on the genre/style rather than this specific track…").
 - Never fabricate specific gear or techniques you're unsure about.
+- Be transparent about confidence. If you don't have documented knowledge of how this specific stem was processed, frame the result clearly as a stylistically-informed STARTING POINT for the genre/artist, not a factual recipe of the original record. Do not state specific gear as fact unless it is genuinely documented.
 
 PLUGIN RULES — very important:
 - For each stage, provide an "options" array of 2-3 premium plugins that each achieve this stage, from DIFFERENT companies when possible, ONLY from: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
