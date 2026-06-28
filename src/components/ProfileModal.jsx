@@ -16,6 +16,7 @@ export default function ProfileModal({ user, onClose }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasProfile, setHasProfile] = useState(false);
+  const [openViewBrand, setOpenViewBrand] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -105,11 +106,34 @@ export default function ProfileModal({ user, onClose }) {
               ) : <span className="text-[10px]" style={labelStyle}>—</span>}
             </div>
             <ViewRow label="Audio Interface / Preamp" value={iface || '—'} />
-            <div>
+                        <div>
               <div className="text-[8px] tracking-[0.2em] uppercase mb-1.5" style={labelStyle}>Plugins ({plugins.length})</div>
               {plugins.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {plugins.map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-xl" style={{ background: '#c4832a14', border: '1px solid #c4832a33', color: '#c4832a' }}>{p}</span>)}
+                <div className="space-y-1.5">
+                  {[...Object.entries(PLUGIN_CATALOG).map(([brand, list]) => [brand, plugins.filter(p => list.includes(p))]), ['Other', customPlugins]]
+                    .filter(([, owned]) => owned.length > 0)
+                    .map(([brand, owned]) => {
+                      const isOpen = openViewBrand === brand;
+                      return (
+                        <div key={brand} className="rack-unit rounded-xl overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => setOpenViewBrand(isOpen ? null : brand)}
+                            className="w-full flex items-center justify-between px-3 py-2.5 text-left"
+                          >
+                            <span className="text-[9px] tracking-[0.15em] uppercase font-bold" style={{ color: '#c4832a' }}>
+                              {brand} <span style={{ color: '#8a7355' }}>· {owned.length}</span>
+                            </span>
+                            <span className="text-[9px] transition-transform duration-200" style={{ color: '#8a7355', transform: isOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+                          </button>
+                          {isOpen && (
+                            <div className="flex flex-wrap gap-1.5 px-3 pb-3" style={{ borderTop: '1px solid #3d2e1a', paddingTop: '0.6rem' }}>
+                              {owned.map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-xl" style={{ background: '#c4832a14', border: '1px solid #c4832a33', color: '#c4832a' }}>{p}</span>)}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               ) : <span className="text-[10px]" style={labelStyle}>—</span>}
             </div>
