@@ -32,7 +32,7 @@ PERSONALIZATION RULES:
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2560,
+      max_tokens: 4096,
       system: `You are a world-class audio engineer and music producer with deep knowledge of recording techniques, mixing, and the signature sounds of iconic artists. You have internalized knowledge from sources like Sound On Sound, Tape Op, Mix Magazine, Pensado's Place, and production forums.
 
 When given a reference track and source type, analyze the SPECIFIC sonic characteristics of that artist/song — not generic advice. Consider:
@@ -87,7 +87,12 @@ Chain: 4-6 nodes in correct signal flow order. Colors: #3ddc84, #7c5cfc, #ff6b9d
     return res.status(500).json({ error: data.error?.message || 'API error' });
   }
 
-  const text = data.content[0].text;
+    const text = data.content[0].text;
   const cleaned = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
-  res.status(200).json(JSON.parse(cleaned));
+  try {
+    res.status(200).json(JSON.parse(cleaned));
+  } catch (e) {
+    console.error('JSON parse failed:', cleaned);
+    res.status(500).json({ error: 'The AI response was incomplete. Please try again.' });
+  }
 }
