@@ -1,7 +1,27 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { query, sourceType } = req.body;
+  const { query, sourceType, profile } = req.body;
+
+  // Build gear context from the user's profile (if logged in)
+  let gearContext = '';
+  if (profile && (profile.daw || profile.plugins?.length || profile.mics?.length || profile.interface)) {
+    const parts = [];
+    if (profile.daw) parts.push(`DAW: ${profile.daw} (you may also recommend its built-in stock plugins)`);
+    if (profile.mics?.length) parts.push(`Microphones: ${profile.mics.join(', ')}`);
+    if (profile.interface) parts.push(`Audio interface / preamp: ${profile.interface}`);
+    if (profile.plugins?.length) parts.push(`Plugins owned: ${profile.plugins.join(', ')}`);
+    gearContext = `
+
+THE USER'S STUDIO:
+${parts.join('\n')}
+
+PERSONALIZATION RULES:
+- In each stage's "options" array, PRIORITIZE plugins the user already owns — list them FIRST and set "owned": true on them.
+- You may also recommend the DAW's built-in stock plugins as an owned option (set "owned": true) when relevant.
+- Still include 1-2 premium options they don't own (owned: false) so they have aspirational picks.
+- Factor the user's microphone and interface character into the "why" text and parameter "note" fields (e.g. a bright condenser needs less presence boost; a clean preamp benefits from added saturation).`;
+  }
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -11,7 +31,7 @@ export default async function handler(req, res) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2560,
       system: `You are a world-class audio engineer and music producer with deep knowledge of recording techniques, mixing, and the signature sounds of iconic artists. You have internalized knowledge from sources like Sound On Sound, Tape Op, Mix Magazine, Pensado's Place, and production forums.
 
@@ -21,10 +41,15 @@ When given a reference track and source type, analyze the SPECIFIC sonic charact
 - What makes this sound unique compared to others in the same genre
 - Specific parameter ranges that match the actual recording
 
+ACCURACY RULES — critical:
+- Use the reference EXACTLY as the user typed it. NEVER correct, change, or "fix" the artist or song name, even if it looks like a misspelling — niche artists have unusual names (e.g. "biig piig" is a real artist, not "big pig").
+- If you are NOT confident about the specific track's production, DO NOT invent details. Instead base your advice on the artist's general style or the genre, and reflect that honestly in the "why" field (e.g. "Based on the genre/style rather than this specific track…").
+- Never fabricate specific gear or techniques you're unsure about.
+
 PLUGIN RULES — very important:
 - For each stage, provide an "options" array of 2-3 premium plugins that each achieve this stage, from DIFFERENT companies when possible, ONLY from: Waves, Universal Audio, FabFilter, Valhalla DSP, Soundtoys, Safari Audio.
-- Each option: { "plugin": real product name, "company": exact company name }.
-- Also provide "free": ONE free plugin chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.
+- Each option: { "plugin": real product name, "company": exact company name, "owned": true/false }.
+- Also provide "free": ONE free plugin chosen ONLY from this exact list: TDR Nova (EQ), TDR Kotelnikov (compressor), TDR VOS SlickEQ (EQ), Valhalla Supermassive (reverb/delay), Analog Obsession (analog emulations), Voxengo SPAN (analyzer), Softube Saturation Knob (saturation), Vital (synth). Pick the closest match for the stage.${gearContext}
 
 Return ONLY valid JSON, no markdown:
 {
@@ -39,8 +64,8 @@ Return ONLY valid JSON, no markdown:
     {
       "category": "EQ",
       "options": [
-        { "plugin": "FabFilter Pro-Q 3", "company": "FabFilter" },
-        { "plugin": "Waves SSL E-Channel", "company": "Waves" }
+        { "plugin": "FabFilter Pro-Q 3", "company": "FabFilter", "owned": false },
+        { "plugin": "Waves SSL E-Channel", "company": "Waves", "owned": false }
       ],
       "free": "TDR Nova",
       "params": [

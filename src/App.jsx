@@ -33,11 +33,20 @@ export default function App() {
     ? saved.some((s) => s.id === result.id && s.reference === result.reference)
     : false;
 
-  async function handleAnalyze({ query, sourceType }) {
+   async function handleAnalyze({ query, sourceType }) {
     setError(null);
     setView('loading');
     try {
-      const data = await callClaude(query, sourceType);
+      let profile = null;
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('daw, mics, interface, plugins')
+          .eq('id', user.id)
+          .single();
+        profile = data || null;
+      }
+      const data = await callClaude(query, sourceType, profile);
       setResult({ ...data, type: sourceType });
       setView('results');
     } catch (e) {
